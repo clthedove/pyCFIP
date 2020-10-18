@@ -1,0 +1,14 @@
+# IDE
+.idea/
+
+# Python
+__pycache__/
+
+# PyInstaller
+build/
+dist/
+
+# pyCFIP
+ips.json
+pycfip
+pycfip.exe
