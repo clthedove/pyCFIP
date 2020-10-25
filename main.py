@@ -215,6 +215,7 @@ def main():
                 _max_dl_sped / 1048576,
                 _avg_dl_sped / 1048576
             ))
+        _os.system('pause')
     except KeyboardInterrupt:
         _warn('terminated')
         _sys.exit()
