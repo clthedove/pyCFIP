@@ -10,5 +10,5 @@ dist/
 
 # pyCFIP
 ips.json
+release/
 pycfip
-pycfip.exe

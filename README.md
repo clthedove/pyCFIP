@@ -37,7 +37,6 @@ call build.cmd
 ### Linux
 ```
 python3 -m pip install pyinstaller
-chmod +x build.sh
 ./build.sh
 ```
 ### macOS
