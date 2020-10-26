@@ -1,5 +1,7 @@
 # pyCFIP
 A tool helps you to find some usable Cloudflare IP.
+
+This repository is based on this [gist](https://gist.github.com/nickfox-taterli/8057e061b89f8c5873e7666da3df72f9).
 ## How to use:
 ### Windows(need install Python3 first)
 ```
