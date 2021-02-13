@@ -33,12 +33,10 @@ python3 main.py
 ## Build:
 ### Windows
 ```
-python -m pip install pyinstaller
 call build.cmd
 ```
 ### Linux
 ```
-python3 -m pip install pyinstaller
 ./build.sh
 ```
 ### macOS
