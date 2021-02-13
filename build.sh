@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 export RELEASE_FOLDER=release
 export BIN_NAME=$RELEASE_FOLDER/pycfip-$(uname -s | tr '[A-Z]' '[a-z]')-$(uname -m | tr '[A-Z]' '[a-z]')
 rm -rf $RELEASE_FOLDER
