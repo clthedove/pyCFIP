@@ -2,7 +2,6 @@
 """
 The pyCFIP's library.
 """
-__author__ = "clthedove"
 
 import collections as _collections
 import datetime as _datatime
@@ -15,6 +14,8 @@ import threadpool as _threadpool
 class CloudflareSpeedTest(object):
     def __init__(
             self,
+            _test_url: str,
+            _test_host: str,
             _test_times: int,
             _dload_time,
             _dload_chunk_siz: int,
@@ -27,8 +28,8 @@ class CloudflareSpeedTest(object):
         self._dload_timeout = _dload_timeout
         self._test_thread_amt = _test_thread_amt
         self._req = _requests.session()
-        self._headers = {'Host': 'vpsro.imghost.tech'}
-        self._url = 'http://{}/LookingGlass/1GB.test'
+        self._headers = {'Host': _test_host}
+        self._test_url = _test_url
         self._results = list()
 
     def _test(self, _ip: str):
@@ -37,7 +38,7 @@ class CloudflareSpeedTest(object):
         for _t in range(self._test_times):
             try:
                 _resp = self._req.get(
-                    self._url.format(_ip),
+                    self._test_url.format(_ip),
                     headers=self._headers,
                     stream=True,
                     timeout=self._dload_timeout

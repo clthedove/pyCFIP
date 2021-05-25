@@ -3,7 +3,6 @@
 pyCFIP
 A tool helps you to find some usable Cloudflare IP.
 """
-__author__ = "clthedove"
 
 import collections as _collections
 import json as _json
@@ -17,9 +16,19 @@ from lib import CloudflareSpeedTest
 
 ips_json = 'ips.json'
 ranges_json = 'ranges.json'
+url_scheme_list = [
+    'http',
+    'https',
+    'ftp'
+]
+URL_SCHEMES = []
+for scheme in url_scheme_list:
+    URL_SCHEMES.append('%s://' % scheme)
 
 
 def _test(
+        _test_url: str,
+        _test_host: str,
         _ips_list: list,
         _test_times: int,
         _dload_time,
@@ -31,6 +40,8 @@ def _test(
 ) -> list:
     _random.shuffle(_ips_list)
     return CloudflareSpeedTest(
+        _test_url,
+        _test_host,
         _test_times,
         _dload_time,
         _dload_chunk_siz,
@@ -40,6 +51,46 @@ def _test(
         _ips_list[:_test_ip_amt],
         _on_prog
     )
+
+
+def _multi_startswith(pattens: list, target: str) -> bool:
+    for patten in pattens:
+        if target.startswith(patten):
+            return True
+    return False
+
+
+def _input_valid_url(
+        _hint: str,
+        _def: str
+):
+    while True:
+        _input = input(_hint)
+        if not _input:
+            if _def:
+                _input = _def
+            else:
+                _error('there\'s no default value for this field')
+                continue
+        if not _multi_startswith(URL_SCHEMES, _input):
+            _error('not a valid url')
+            continue
+        return _input
+
+
+def _input_valid_string(
+        _hint: str,
+        _def: str
+):
+    while True:
+        _input = input(_hint)
+        if not _input:
+            if _def:
+                _input = _def
+            else:
+                _error('there\'s no default value for this field')
+                continue
+        return _input
 
 
 def _input_valid_number(
@@ -52,8 +103,12 @@ def _input_valid_number(
     while True:
         try:
             _input = input(_hint)
-            if _input == "":
-                _input = _def
+            if not _input:
+                if _def:
+                    _input = _def
+                else:
+                    _error('there\'s no default value for this field')
+                    continue
             if type(_input) != _val_typ:
                 _input = _val_typ(_input)
             if _input in range(_min_val, _max_val + 1):
@@ -67,12 +122,16 @@ def _input_valid_number(
 def _input_valid_filepath(_hint: str, _def) -> str:
     while True:
         _input = input(_hint)
-        if _input == "":
-            _input = _def
+        if not _input:
+            if _def:
+                _input = _def
+            else:
+                _error('there\'s no default value for this field')
+                continue
         if _os.path.exists(_input):
             return _def
         else:
-            _error('file not exist.')
+            _error('file not exist')
 
 
 def _get_term_width() -> int:
@@ -120,7 +179,7 @@ def main():
     The main function of the program.
     """
     try:
-        _info('pyCFIP <https://github.com/clthedove/pyCFIP>')
+        _info('pyCFIP v0.2 <https://github.com/zijianjiao2017/pyCFIP>')
         if _os.path.exists(ips_json):
             with open(ips_json, 'r') as _f:
                 _ips_list = _json.loads(_f.read())
@@ -129,7 +188,7 @@ def main():
             if _os.path.exists(ranges_json):
                 _info('using %s' % ranges_json)
                 _f = open(ranges_json, 'r')
-            else :
+            else:
                 _f = open(
                     _input_valid_filepath(
                         'enter ip ranges filepath[%s]: ' % ranges_json,
@@ -155,6 +214,14 @@ def main():
             _ips_list = list(_ips)
             with open(ips_json, 'w') as _f_:
                 _f_.write(_json.dumps(_ips_list))
+        _test_url = _input_valid_url(
+            'enter test url(any)[https://{}/__down?bytes=125000000]: ',
+            'https://{}/__down?bytes=125000000'
+        )
+        _test_host = _input_valid_string(
+            'enter test host(any)[speed.cloudflare.com]: ',
+            'speed.cloudflare.com'
+        )
         _test_times = _input_valid_number(
             'enter test times(1-N)[5]: ',
             5, int, 1)
@@ -176,6 +243,8 @@ def main():
         while True:
             _info('starting test...')
             _valid_ips = _test(
+                _test_url,
+                _test_host,
                 _ips_list.copy(),
                 _test_times,
                 _dload_time,
